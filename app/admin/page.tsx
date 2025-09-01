@@ -428,7 +428,7 @@ export default function AdminPage() {
           <ul className="space-y-2 text-sm text-gray-600">
             <li>• For patterns: Use {'{'}curly_braces{'}'} to mark variables in templates</li>
             <li>• For viral content: Copy exact view counts from the platform</li>
-            <li>• Check creator's current follower count (not at time of posting) for estimates</li>
+            <li>• Check creator&apos;s current follower count (not at time of posting) for estimates</li>
             <li>• The viral ratio is automatically calculated (views ÷ followers)</li>
             <li>• Higher viral ratios (15x+) indicate extremely successful content</li>
             <li>• Add at least 5-10 examples before creating a pattern template</li>

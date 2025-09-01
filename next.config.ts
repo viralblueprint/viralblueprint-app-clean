@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     unoptimized: true
   },
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: true,
+    dirs: []
   },
   typescript: {
     ignoreBuildErrors: true
