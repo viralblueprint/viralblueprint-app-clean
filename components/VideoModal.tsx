@@ -176,7 +176,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
       
       {/* Modal Container - allows scrolling on mobile */}
       <div 
-        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col-reverse md:flex-row overflow-y-auto md:overflow-hidden"
+        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row overflow-y-auto md:overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -200,7 +200,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           />
         </button>
 
-        {/* Mobile: Bottom, Desktop: Left Side - Clickable Video Preview */}
+        {/* Mobile: Top, Desktop: Left Side - Clickable Video Preview */}
         <a 
           href={video.url} 
           target="_blank" 
@@ -243,7 +243,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
         </a>
 
-        {/* Mobile: Top (appears first), Desktop: Right Side - Analysis */}
+        {/* Mobile: Bottom, Desktop: Right Side - Analysis */}
         <div className="flex-1 p-6 md:p-8 md:overflow-y-auto">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Why This Video Went Viral</h2>
 
