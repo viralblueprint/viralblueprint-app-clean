@@ -176,7 +176,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
       
       {/* Modal */}
       <div 
-        className="relative bg-white rounded-2xl overflow-hidden max-w-5xl w-full max-h-[90vh] flex"
+        className="relative bg-white rounded-2xl overflow-hidden md:overflow-visible max-w-5xl w-full max-h-[90vh] flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -200,12 +200,12 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           />
         </button>
 
-        {/* Left Side - Clickable Video Preview */}
+        {/* Top/Left Side - Clickable Video Preview */}
         <a 
           href={video.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="w-2/5 bg-gray-900 relative flex flex-col cursor-pointer group"
+          className="w-full md:w-2/5 h-64 md:h-auto bg-gray-900 relative flex flex-col cursor-pointer group"
         >
           {/* External Link Icon - shows on hover */}
           <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -243,9 +243,9 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
         </a>
 
-        {/* Right Side - Analysis */}
-        <div className="flex-1 p-8 overflow-y-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Why This Video Went Viral</h2>
+        {/* Bottom/Right Side - Analysis */}
+        <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Why This Video Went Viral</h2>
 
           {/* Opening Hook Display */}
           {(video.hook || video.written_hook || video.verbal_hook || video.visual_hook) && (
@@ -258,9 +258,9 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           )}
 
           {/* Two Sections - Format and Hook Type */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {/* Format Section */}
-            <div className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+            <div className="border border-gray-200 rounded-lg p-4 md:p-6 bg-white shadow-sm">
               <div className="flex items-center justify-center mb-3">
                 <TrendingUp className="w-10 h-10 text-blue-600" />
               </div>
@@ -277,7 +277,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
             </div>
 
             {/* Hook Type Section */}
-            <div className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
+            <div className="border border-gray-200 rounded-lg p-4 md:p-6 bg-white shadow-sm">
               <div className="flex items-center justify-center mb-3">
                 <Hash className="w-10 h-10 text-purple-600" />
               </div>
@@ -314,27 +314,27 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
 
           {/* Engagement Metrics Bar */}
           <div className="bg-gray-100 rounded-lg p-4 mt-auto">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Eye className="w-5 h-5 text-purple-600" />
-                  <span className="text-2xl font-bold text-gray-900">{formatViews(video.views)}</span>
+                <div className="flex items-center justify-center gap-1 md:gap-2 mb-1">
+                  <Eye className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />
+                  <span className="text-lg md:text-2xl font-bold text-gray-900">{formatViews(video.views)}</span>
                 </div>
                 <p className="text-sm text-gray-600">Views</p>
               </div>
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Heart className="w-5 h-5 text-red-500" />
-                  <span className="text-2xl font-bold text-gray-900">
+                <div className="flex items-center justify-center gap-1 md:gap-2 mb-1">
+                  <Heart className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
+                  <span className="text-lg md:text-2xl font-bold text-gray-900">
                     {video.likes ? formatViews(video.likes) : formatViews(Math.floor(video.views * 0.12))}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">Likes</p>
               </div>
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <MessageCircle className="w-5 h-5 text-blue-500" />
-                  <span className="text-2xl font-bold text-gray-900">
+                <div className="flex items-center justify-center gap-1 md:gap-2 mb-1">
+                  <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+                  <span className="text-lg md:text-2xl font-bold text-gray-900">
                     {video.comments ? formatViews(video.comments) : formatViews(Math.floor(video.views * 0.02))}
                   </span>
                 </div>
@@ -344,9 +344,9 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
 
           {/* Video Info Stickers - Platform, Industry, Viral Score */}
-          <div className="flex flex-wrap gap-3 justify-center mt-4">
-            <div className={`px-6 py-3 rounded-full ${getPlatformBadge()}`}>
-              <span className="text-xl font-bold">
+          <div className="flex flex-wrap gap-2 md:gap-3 justify-center mt-4">
+            <div className={`px-4 md:px-6 py-2 md:py-3 rounded-full ${getPlatformBadge()}`}>
+              <span className="text-base md:text-xl font-bold">
                 {video.platform?.toLowerCase() === 'instagram' ? 'Instagram' :
                  video.platform?.toLowerCase() === 'tiktok' ? 'TikTok' :
                  video.platform?.toLowerCase() === 'youtube' ? 'YouTube' :
@@ -354,14 +354,14 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
               </span>
             </div>
             {video.industry && (
-              <div className={`px-6 py-3 rounded-full ${getNicheColor(video.industry)}`}>
-                <span className="text-xl font-bold">{video.industry}</span>
+              <div className={`px-4 md:px-6 py-2 md:py-3 rounded-full ${getNicheColor(video.industry)}`}>
+                <span className="text-base md:text-xl font-bold">{video.industry}</span>
               </div>
             )}
             {video.viral_score && (
-              <div className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-                <TrendingUp className="w-5 h-5 inline mr-2" />
-                <span className="text-xl font-bold">{video.viral_score}x Viral</span>
+              <div className="px-4 md:px-6 py-2 md:py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                <TrendingUp className="w-4 h-4 md:w-5 md:h-5 inline mr-1 md:mr-2" />
+                <span className="text-base md:text-xl font-bold">{video.viral_score}x Viral</span>
               </div>
             )}
           </div>
