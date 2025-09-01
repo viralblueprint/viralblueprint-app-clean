@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { TrendingUp, Search, Menu, X, BarChart3, User, LogOut } from 'lucide-react'
+import { TrendingUp, Search, Menu, X, BarChart3, User, LogOut, Flame } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from './AuthProvider'
 import AuthModal from './AuthModal'
@@ -44,12 +44,14 @@ export default function Navigation() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <Flame className="w-8 h-8 text-purple-600 md:hidden mr-2" />
+              <span className="hidden md:block text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Viral Blueprint
               </span>
             </Link>
             
-            <div className="hidden md:ml-6 md:flex md:space-x-8">
+            {/* Show nav items on mobile too, without hamburger */}
+            <div className="ml-4 sm:ml-6 flex space-x-4 sm:space-x-6 md:space-x-8">
               {navItems.map((item) => {
                 const Icon = item.icon
                 return (
@@ -62,8 +64,8 @@ export default function Navigation() {
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {item.label}
+                    <Icon className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">{item.label}</span>
                   </Link>
                 )
               })}
@@ -109,43 +111,12 @@ export default function Navigation() {
                 Sign In
               </button>
             ) : null}
-            
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            {/* Remove hamburger menu button */}
           </div>
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="md:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors ${
-                    pathname === item.href
-                      ? 'bg-purple-50 border-purple-600 text-purple-700'
-                      : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <Icon className="w-4 h-4 mr-2" />
-                    {item.label}
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      )}
+      {/* Mobile menu removed - nav items now always visible */}
       
       <AuthModal 
         isOpen={showAuthModal} 
