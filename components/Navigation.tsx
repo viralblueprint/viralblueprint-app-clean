@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { TrendingUp, Search, Menu, X, BarChart3, User, LogOut, Flame } from 'lucide-react'
+import { Home, Search, Menu, X, BarChart3, User, LogOut, Flame } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from './AuthProvider'
 import AuthModal from './AuthModal'
@@ -33,7 +33,7 @@ export default function Navigation() {
   }, [])
 
   const navItems = [
-    { href: '/', label: 'Home', icon: TrendingUp },
+    { href: '/', label: 'Home', icon: Home },
     { href: '/patterns', label: 'Viral Database', icon: Search },
     { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
   ]
@@ -45,7 +45,7 @@ export default function Navigation() {
           <div className="flex">
             <Link href="/" className="flex items-center">
               <Flame className="w-8 h-8 text-purple-600 mr-2" />
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="hidden sm:block text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Viral Blueprint
               </span>
             </Link>
@@ -73,7 +73,7 @@ export default function Navigation() {
           </div>
 
           {/* Mobile nav items - centered */}
-          <div className="flex md:hidden items-center space-x-3 absolute left-1/2 transform -translate-x-1/2">
+          <div className="flex md:hidden items-center space-x-3 absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
             {navItems.map((item) => {
               const Icon = item.icon
               return (
