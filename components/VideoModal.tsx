@@ -176,7 +176,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
       
       {/* Modal Container - allows scrolling on mobile */}
       <div 
-        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row overflow-y-auto md:overflow-hidden"
+        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -205,7 +205,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           href={video.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="w-full md:w-2/5 h-64 md:h-auto bg-gray-900 relative flex flex-col cursor-pointer group flex-shrink-0"
+          className="w-full md:w-2/5 min-h-[16rem] md:h-auto bg-gray-900 relative flex flex-col cursor-pointer group flex-shrink-0"
         >
           {/* External Link Icon - shows on hover */}
           <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -244,7 +244,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         </a>
 
         {/* Mobile: Bottom, Desktop: Right Side - Analysis */}
-        <div className="flex-1 p-6 md:p-8 md:overflow-y-auto">
+        <div className="flex-1 p-6 md:p-8 overflow-y-auto">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Why This Video Went Viral</h2>
 
           {/* Opening Hook Display */}
