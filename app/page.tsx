@@ -9,13 +9,6 @@ import Link from 'next/link'
 
 export default function Home() {
 
-  const industries = [
-    'Education & Business',
-    'Fitness Influencers',
-    'Beauty & Fashion',
-    'Gaming Creators'
-  ]
-
   const pricingPlans = [
     {
       id: 'pro',
@@ -142,64 +135,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Creator Niches Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Industries Analyzed
-            </h2>
-            <p className="text-xl text-gray-600">
-              Each industry gets dedicated analysis and insights
-            </p>
-          </div>
-
-          <div className="max-w-5xl mx-auto">
-            {(() => {
-              const icons: Record<string, string> = {
-                'Lifestyle Influencers': '✨',
-                'Education & Business': '📚',
-                'Fitness Influencers': '💪',
-                'Beauty & Fashion': '💄',
-                'Tech Creators': '🚀',
-                'Gaming Creators': '🎮'
-              }
-              const descriptions: Record<string, string> = {
-                'Lifestyle Influencers': 'Day in my life • Routines • Vlogs • Home tours',
-                'Education & Business': 'Tutorials • How-to • Business tips • Teaching',
-                'Fitness Influencers': 'Workouts • What I eat • Transformations',
-                'Beauty & Fashion': 'Makeup tutorials • Fashion hauls • GRWM • Outfit ideas',
-                'Tech Creators': 'Gadget reviews • App demos • Tech news • Coding',
-                'Gaming Creators': 'Gameplay • Reviews • Tips • Streaming'
-              }
-              
-              const renderCard = (niche: string, index: number) => (
-                <div key={index} className="bg-white rounded-xl p-6 flex flex-col items-center justify-center border-2 border-gray-100 hover:border-purple-600 hover:shadow-lg transition-all group">
-                  <div className="text-3xl mb-3">{icons[niche]}</div>
-                  <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors mb-2 text-center w-full">{niche}</h3>
-                  <p className="text-xs text-gray-500 text-center">{descriptions[niche]}</p>
-                </div>
-              )
-              
-              return (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {industries.map((industry, index) => renderCard(industry, index))}
-                </div>
-              )
-            })()}
-          </div>
-
-          <div className="text-center mt-10">
-            <p className="text-gray-600 mb-4">
-              Don&apos;t see your creator type? We analyze all niches.
-            </p>
-            <Link href="/#pricing" className="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700">
-              View All Industries
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Sample Insights */}
       <section id="sample" className="py-16 bg-white">
