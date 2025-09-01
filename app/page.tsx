@@ -82,14 +82,14 @@ export default function Home() {
             </div>
             
             <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900">
-              The Social Media Intelligence
+              Stop Guessing What Makes
               <span className="block text-4xl md:text-5xl mt-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Platform for Creators
+                Content Go Viral
               </span>
             </h1>
             
             <p className="text-xl md:text-2xl mb-8 text-gray-700 max-w-3xl mx-auto">
-              Access 10,000+ viral short-form videos and real-time analytics dashboards. Discover what&apos;s working across TikTok and Instagram Reels with data-driven insights.
+              Discover the exact hook structures and formats that make content go viral in your industry
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
