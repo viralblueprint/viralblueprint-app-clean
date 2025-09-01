@@ -170,15 +170,16 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center md:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 overflow-hidden" onClick={onClose}>
       {/* Backdrop */}
       <div className="fixed inset-0 bg-black/60" />
       
-      {/* Modal Container - allows scrolling on mobile */}
-      <div 
-        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
+      {/* Modal Container - prevents background scroll */}
+      <div className="fixed inset-0 flex items-center justify-center p-0 md:p-4">
+        <div 
+          className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -205,7 +206,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           href={video.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="w-full md:w-2/5 min-h-[16rem] md:h-auto bg-gray-900 relative flex flex-col cursor-pointer group flex-shrink-0"
+          className="w-full md:w-2/5 h-[40vh] md:h-auto bg-gray-900 relative cursor-pointer group flex-shrink-0"
         >
           {/* External Link Icon - shows on hover */}
           <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -215,7 +216,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
 
           {/* Video Placeholder or Display URL Image */}
-          <div className="flex-1 flex items-center justify-center relative">
+          <div className="w-full h-full flex items-center justify-center relative">
             {video.display_url || video.thumbnail ? (
               <img 
                 src={getImageUrl(video.display_url || video.thumbnail) || ''} 
@@ -230,8 +231,8 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
             )}
           </div>
 
-          {/* Creator Info */}
-          <div className="p-4 text-white">
+          {/* Creator Info - positioned at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/80 to-transparent">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <Users className="w-5 h-5" />
@@ -367,6 +368,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
 
         </div>
+      </div>
       </div>
 
       {/* Album Save Modal */}
