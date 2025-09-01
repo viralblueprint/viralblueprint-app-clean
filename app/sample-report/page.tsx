@@ -2,10 +2,10 @@
 
 import Navigation from '@/components/Navigation'
 import { 
-  FileText, TrendingUp, BarChart3, Users, 
-  ArrowRight, Target, BookOpen, Video,
-  Eye, Download, ChevronRight, Play,
-  Zap, Brain, Clock, Share2
+  FileText, TrendingUp, 
+  Target, Video,
+  Download, Play,
+  Zap, Brain
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -137,7 +137,7 @@ export default function SampleReportPage() {
             </h1>
             
             <p className="text-xl mb-8 text-gray-700 max-w-3xl mx-auto">
-              See exactly what you'll receive each month: 20-25 pages of actionable viral content analysis across TikTok, Instagram Reels, and YouTube Shorts.
+              See exactly what you&apos;ll receive each month: 20-25 pages of actionable viral content analysis across TikTok, Instagram Reels, and YouTube Shorts.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -271,7 +271,7 @@ export default function SampleReportPage() {
               Sample Content Templates
             </h2>
             <p className="text-xl text-gray-600">
-              Ready-to-use formulas from this month's top performers
+              Ready-to-use formulas from this month&apos;s top performers
             </p>
           </div>
 
@@ -303,7 +303,7 @@ export default function SampleReportPage() {
                   
                   <div className="bg-purple-50 rounded-lg p-3">
                     <p className="text-sm text-gray-600 mb-1">Example:</p>
-                    <p className="text-sm font-medium text-purple-900">"{template.example}"</p>
+                    <p className="text-sm font-medium text-purple-900">&quot;{template.example}&quot;</p>
                   </div>
                 </div>
               </div>
@@ -320,7 +320,7 @@ export default function SampleReportPage() {
               Platform-Specific Insights
             </h2>
             <p className="text-xl text-gray-600">
-              What's working on each platform this month
+              What&apos;s working on each platform this month
             </p>
           </div>
 

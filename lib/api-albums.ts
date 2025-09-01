@@ -216,3 +216,59 @@ export async function isVideoSaved(videoId: string) {
 
   return data?.map(item => item.album_id) || []
 }
+
+// Get a single album by ID
+export async function getAlbum(id: string) {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('albums')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error) {
+    console.error('Error fetching album:', error)
+    return null
+  }
+
+  return data
+}
+
+// Get all videos in a specific album
+export async function getAlbumVideos(albumId: string) {
+  const supabase = createClient()
+  
+  // First get the saved video records for this album
+  const { data: savedVideos, error } = await supabase
+    .from('saved_videos')
+    .select('*')
+    .eq('album_id', albumId)
+    .order('saved_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching saved videos:', error)
+    return []
+  }
+
+  if (!savedVideos || savedVideos.length === 0) {
+    return []
+  }
+
+  // Get the actual video data
+  const videoIds = savedVideos.map(sv => sv.video_id)
+  
+  const { data: videos, error: videosError } = await supabase
+    .from('viral_videos')
+    .select('*')
+    .in('id', videoIds)
+
+  if (videosError) {
+    console.error('Error fetching video details:', videosError)
+    return []
+  }
+
+  // Map videos to the expected format and filter out nulls
+  const mappedVideos = videos?.map(mapVideoData).filter(v => v !== null) || []
+  
+  return mappedVideos
+}

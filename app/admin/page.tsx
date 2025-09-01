@@ -61,8 +61,8 @@ export default function AdminPage() {
       })
       
       setTimeout(() => setMessage(''), 3000)
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`)
+    } catch (error) {
+      setMessage(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
@@ -95,8 +95,8 @@ export default function AdminPage() {
       })
       
       setTimeout(() => setMessage(''), 3000)
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`)
+    } catch (error) {
+      setMessage(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 

@@ -8,27 +8,72 @@ import { getViralVideos } from '@/lib/api-scraper'
 import { getAlbumsWithCounts, createAlbum } from '@/lib/api-albums'
 import { useAuth } from '@/components/AuthProvider'
 import { 
-  TrendingUp,
   Eye,
   Heart,
   BarChart3,
   Hash,
   Users,
-  Target,
   Zap,
   Activity,
-  Sparkles,
   Bookmark,
   Folder,
   Plus,
   User
 } from 'lucide-react'
 
+interface Industry {
+  value: string;
+  label: string;
+}
+
+interface Video {
+  id?: string;
+  url?: string;
+  platform?: string;
+  views: number;
+  likes?: number;
+  comments?: number;
+  post_type?: string;
+  hook?: string;
+  written_hook?: string;
+  verbal_hook?: string;
+  visual_hook_type?: string;
+  audio_hook_type?: string;
+  written_hook_type?: string;
+}
+
+interface Album {
+  id: string;
+  name: string;
+  video_count?: number;
+}
+
+interface SearchParams {
+  industry?: string;
+  platform?: string;
+  minViews?: number;
+  maxViews?: number;
+  limit?: number;
+}
+
+interface InitialData {
+  totalVideos: number;
+  totalViews: number;
+  avgViews: number;
+  avgEngagement: number;
+  topPlatform: string;
+  topPostTypes: { type: string; count: number }[];
+  evergreenTopics: { type: string; avgViews: number; count: number }[];
+  recentHooks: { hook: string; views: number; platform: string }[];
+  performanceByPlatform: { platform: string; videos: number; totalViews: number; avgViews: number }[];
+  trendingTopics: { topic: string; count: number }[];
+}
+
 interface DashboardClientProps {
-  industries: any[]
+  industries: Industry[]
   defaultIndustry: string
   defaultPlatform: string
-  initialData: any
+  initialData: InitialData
 }
 
 const platforms = [
@@ -65,7 +110,7 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
       try {
         const albumsData = await getAlbumsWithCounts()
         setAlbums(albumsData)
-      } catch (error) {
+      } catch (_error) {
         // Silently handle error - dashboard will just show empty albums
       } finally {
         setLoadingAlbums(false)
@@ -78,7 +123,7 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
     setLoading(true)
     
     try {
-      const params: any = {
+      const params: SearchParams = {
         industry: industry || selectedIndustry,
         limit: 1000
       }
@@ -91,25 +136,25 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
       const videos = await getViralVideos(params)
 
       // Calculate analytics
-      const totalViews = videos.reduce((sum: number, v: any) => sum + (v.views || 0), 0)
+      const totalViews = videos.reduce((sum: number, v: Video) => sum + (v.views || 0), 0)
       const avgViews = videos.length > 0 ? Math.round(totalViews / videos.length) : 0
       
       // Calculate average engagement
-      const avgEngagement = videos.reduce((sum: number, v: any) => {
+      const avgEngagement = videos.reduce((sum: number, v: Video) => {
         const engagement = ((v.likes || 0) + (v.comments || 0)) / (v.views || 1) * 100
         return sum + engagement
       }, 0) / (videos.length || 1)
 
       // Get platform distribution
-      const platformCounts: any = {}
-      videos.forEach((v: any) => {
+      const platformCounts: Record<string, number> = {}
+      videos.forEach((v: Video) => {
         platformCounts[v.platform] = (platformCounts[v.platform] || 0) + 1
       })
 
       // Get performance by platform
-      const performanceByPlatform = Object.entries(platformCounts).map(([platform, count]: any) => {
-        const platformVideos = videos.filter((v: any) => v.platform === platform)
-        const platformViews = platformVideos.reduce((sum: number, v: any) => sum + (v.views || 0), 0)
+      const performanceByPlatform = Object.entries(platformCounts).map(([platform, count]) => {
+        const platformVideos = videos.filter((v: Video) => v.platform === platform)
+        const platformViews = platformVideos.reduce((sum: number, v: Video) => sum + (v.views || 0), 0)
         return {
           platform,
           videos: count,
@@ -119,28 +164,28 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
       }).sort((a, b) => b.totalViews - a.totalViews)
 
       // Get trending topics (top post types by count)
-      const postTypeCounts: any = {}
-      videos.forEach((v: any) => {
+      const postTypeCounts: Record<string, number> = {}
+      videos.forEach((v: Video) => {
         if (v.post_type) {
           postTypeCounts[v.post_type] = (postTypeCounts[v.post_type] || 0) + 1
         }
       })
       const topPostTypes = Object.entries(postTypeCounts)
-        .map(([type, count]: any) => ({ type, count }))
+        .map(([type, count]) => ({ type, count: count as number }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5)
 
       // Get evergreen topics (post types with highest average views)
-      const postTypeViews: any = {}
-      const postTypeVideoCounts: any = {}
-      videos.forEach((v: any) => {
+      const postTypeViews: Record<string, number> = {}
+      const postTypeVideoCounts: Record<string, number> = {}
+      videos.forEach((v: Video) => {
         if (v.post_type) {
           postTypeViews[v.post_type] = (postTypeViews[v.post_type] || 0) + (v.views || 0)
           postTypeVideoCounts[v.post_type] = (postTypeVideoCounts[v.post_type] || 0) + 1
         }
       })
       const evergreenTopics = Object.entries(postTypeViews)
-        .map(([type, totalViews]: any) => ({
+        .map(([type, totalViews]) => ({
           type,
           avgViews: Math.round(totalViews / postTypeVideoCounts[type]),
           count: postTypeVideoCounts[type]
@@ -150,23 +195,23 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
 
       // Get recent viral hooks
       const recentHooks = videos
-        .filter((v: any) => v.hook || v.written_hook || v.verbal_hook)
+        .filter((v: Video) => v.hook || v.written_hook || v.verbal_hook)
         .slice(0, 5)
-        .map((v: any) => ({
+        .map((v: Video) => ({
           hook: v.hook || v.written_hook || v.verbal_hook,
           views: v.views,
           platform: v.platform
         }))
 
       // Get trending topics
-      const topicCounts: any = {}
-      videos.forEach((v: any) => {
+      const topicCounts: Record<string, number> = {}
+      videos.forEach((v: Video) => {
         if (v.visual_hook_type) topicCounts[v.visual_hook_type] = (topicCounts[v.visual_hook_type] || 0) + 1
         if (v.audio_hook_type) topicCounts[v.audio_hook_type] = (topicCounts[v.audio_hook_type] || 0) + 1
         if (v.written_hook_type) topicCounts[v.written_hook_type] = (topicCounts[v.written_hook_type] || 0) + 1
       })
       const trendingTopics = Object.entries(topicCounts)
-        .map(([topic, count]: any) => ({ topic, count }))
+        .map(([topic, count]) => ({ topic, count: count as number }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 8)
 
@@ -175,14 +220,14 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
         totalViews,
         avgViews,
         avgEngagement: avgEngagement.toFixed(2),
-        topPlatform: Object.entries(platformCounts).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] || 'N/A',
+        topPlatform: Object.entries(platformCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A',
         topPostTypes,
         evergreenTopics,
         recentHooks,
         performanceByPlatform,
         trendingTopics
       })
-    } catch (error) {
+    } catch (_error) {
       console.error('Error loading dashboard data:', error)
     } finally {
       setLoading(false)
@@ -224,7 +269,7 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
         setAlbums(albumsData)
         setShowAlbumModal(false)
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error in handleCreateAlbum:', error)
     }
   }
@@ -337,7 +382,7 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
               {data.performanceByPlatform.length === 0 ? (
                 <p className="text-gray-500 text-center py-4 col-span-full">No platform data available</p>
               ) : (
-                data.performanceByPlatform.map((platform: any, index: number) => (
+                data.performanceByPlatform.map((platform, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
@@ -376,10 +421,10 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
                 {data.recentHooks.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">No hooks available</p>
                 ) : (
-                  data.recentHooks.map((hook: any, index: number) => (
+                  data.recentHooks.map((hook, index) => (
                     <div key={index} className="border-l-4 border-purple-300 pl-4 py-2">
                       <p className="text-sm text-gray-900 font-medium mb-1 line-clamp-2">
-                        "{hook.hook}"
+                        &quot;{hook.hook}&quot;
                       </p>
                       <div className="flex items-center gap-3 text-xs text-gray-600">
                         <span className="flex items-center gap-1">
@@ -404,7 +449,7 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
                 {data.trendingTopics.length === 0 ? (
                   <p className="text-gray-500 text-center py-4 w-full">No trending topics available</p>
                 ) : (
-                  data.trendingTopics.map((topic: any, index: number) => (
+                  data.trendingTopics.map((topic, index) => (
                     <span
                       key={index}
                       className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium"
@@ -461,7 +506,7 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
                       <p className="text-gray-500 text-sm">No albums yet. Create your first album to start saving videos!</p>
                     </div>
                   ) : (
-                    albums.map((album: any) => (
+                    albums.map((album: Album) => (
                       <div
                         key={album.id}
                         className="flex-shrink-0 cursor-pointer group pt-2 pr-2"

@@ -59,11 +59,11 @@ export default function VideoCard({ video, onClick, onSave, onRemove }: VideoCar
     }
   }, [video.id, onSave])
   
-  // Proxy Instagram images to avoid CORS issues
+  // Proxy Instagram/TikTok images to avoid CORS issues
   const getImageUrl = (url: string | null | undefined) => {
     if (!url) return null
-    // Check if it's an Instagram CDN URL
-    if (url.includes('cdninstagram.com') || url.includes('fbcdn.net')) {
+    // Check if it's an Instagram or TikTok CDN URL that needs proxying
+    if (url.includes('cdninstagram.com') || url.includes('fbcdn.net') || url.includes('tiktokcdn.com')) {
       return `/api/proxy-image?url=${encodeURIComponent(url)}`
     }
     return url

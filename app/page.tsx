@@ -1,16 +1,13 @@
 'use client'
 
-import { useState } from 'react'
 import Navigation from '@/components/Navigation'
 import { 
-  FileText, CheckCircle, TrendingUp, BarChart3, Users, 
-  ArrowRight, Zap, Target, BookOpen, Calendar, Video,
-  Star, Shield, Clock, Download
+  CheckCircle, TrendingUp, Users, 
+  ArrowRight, Target, Video
 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Home() {
-  const [selectedPlan, setSelectedPlan] = useState('all-access')
 
   const industries = [
     'Education & Business',
@@ -92,7 +89,7 @@ export default function Home() {
             </h1>
             
             <p className="text-xl md:text-2xl mb-8 text-gray-700 max-w-3xl mx-auto">
-              Access 10,000+ viral short-form videos and real-time analytics dashboards. Discover what's working across TikTok and Instagram Reels with data-driven insights.
+              Access 10,000+ viral short-form videos and real-time analytics dashboards. Discover what&apos;s working across TikTok and Instagram Reels with data-driven insights.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
@@ -119,7 +116,7 @@ export default function Home() {
               Your Complete Viral Intelligence Platform
             </h2>
             <p className="text-xl text-gray-600">
-              Database access and real-time analytics to understand what's working now
+              Database access and real-time analytics to understand what&apos;s working now
             </p>
           </div>
 
@@ -194,7 +191,7 @@ export default function Home() {
 
           <div className="text-center mt-10">
             <p className="text-gray-600 mb-4">
-              Don't see your creator type? We analyze all niches.
+              Don&apos;t see your creator type? We analyze all niches.
             </p>
             <Link href="/#pricing" className="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700">
               View All Industries

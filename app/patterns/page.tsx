@@ -1,15 +1,26 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Navigation from '@/components/Navigation'
 import VideoGrid from '@/components/VideoGrid'
 import { getViralVideos, getIndustries, getPostTypes } from '@/lib/api-scraper'
-import { TrendingUp, Filter, Smartphone, Hash, BarChart3, Calendar, Users, Target, Search } from 'lucide-react'
+import { TrendingUp, Filter, Smartphone, Calendar, Users, Target, Search } from 'lucide-react'
+import { Video } from '@/types/video'
+
+interface Industry {
+  id: string
+  name: string
+}
+
+interface PostType {
+  id: string
+  name: string
+}
 
 export default function PatternsPage() {
-  const [videos, setVideos] = useState<any[]>([])
-  const [creatorNiches, setCreatorNiches] = useState<any[]>([])
-  const [postTypes, setPostTypes] = useState<any[]>([])
+  const [videos, setVideos] = useState<Video[]>([])
+  const [creatorNiches, setCreatorNiches] = useState<Industry[]>([])
+  const [postTypes, setPostTypes] = useState<PostType[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
@@ -24,17 +35,7 @@ export default function PatternsPage() {
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>('')
   const [selectedViews, setSelectedViews] = useState<string>('')
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setCurrentPage(0)
-      setVideos([])
-      loadData(true)
-    }, searchQuery ? 500 : 0)
-
-    return () => clearTimeout(delayDebounceFn)
-  }, [searchQuery, selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews])
-
-  async function loadData(reset = false) {
+  const loadData = useCallback(async (reset = false) => {
     if (reset) {
       setLoading(true)
     } else {
@@ -60,7 +61,7 @@ export default function PatternsPage() {
       ])
       
       // No more client-side filtering needed - all done server-side
-      let filtered = videosData
+      const filtered = videosData
       
       // Only get new videos if not reset
       const newVideos = reset ? filtered : filtered.slice(currentPage * videosPerPage)
@@ -89,7 +90,17 @@ export default function PatternsPage() {
       setLoading(false)
       setLoadingMore(false)
     }
-  }
+  }, [currentPage, searchQuery, selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews, videosPerPage])
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setCurrentPage(0)
+      setVideos([])
+      loadData(true)
+    }, searchQuery ? 500 : 0)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchQuery, selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews, loadData])
   
   const handleLoadMore = () => {
     if (!loadingMore && hasMore) {
