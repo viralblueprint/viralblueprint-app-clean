@@ -192,17 +192,17 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-hidden z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Fixed Header with Buttons - Mobile */}
-        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-40 md:hidden bg-gradient-to-b from-white via-white/95 to-transparent">
+        {/* Fixed Header with Buttons - Mobile - Now overlays on video */}
+        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-40 md:hidden">
           {/* Save Button - Top Left */}
           <button
             onClick={handleSaveClick}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
+            className="p-2 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors"
             disabled={checkingSaved}
           >
             <Bookmark 
               className={`w-5 h-5 transition-colors ${
-                isSaved ? 'fill-purple-600 text-purple-600' : 'text-gray-600'
+                isSaved ? 'fill-white text-white' : 'text-white'
               }`} 
             />
           </button>
@@ -210,9 +210,9 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           {/* Close Button - Top Right */}
           <button
             onClick={onClose}
-            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
+            className="p-2 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors"
           >
-            <X className="w-5 h-5 text-black" />
+            <X className="w-5 h-5 text-white" />
           </button>
         </div>
 
@@ -236,14 +236,14 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         </button>
 
         {/* Scrollable container for mobile, separate sections for desktop */}
-        <div className="w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden pt-16 md:pt-0">
+        <div className="w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
         
         {/* Mobile: Top, Desktop: Left Side - Clickable Video Preview */}
         <a 
           href={video.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="w-full md:w-2/5 aspect-square md:aspect-auto md:h-full bg-gray-900 relative cursor-pointer group flex-shrink-0"
+          className="w-full md:w-2/5 aspect-[9/16] md:aspect-auto md:h-full bg-gray-900 relative cursor-pointer group flex-shrink-0"
         >
           {/* External Link Icon - shows on hover */}
           <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
