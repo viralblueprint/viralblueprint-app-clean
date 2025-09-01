@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Navigation from '@/components/Navigation'
 import { getPatterns, Pattern } from '@/lib/api'
 import { Copy, Download, RefreshCw, Sparkles, CheckCircle } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 
-export default function TemplatesPage() {
+function TemplatesContent() {
   const searchParams = useSearchParams()
   const patternId = searchParams.get('pattern')
   
@@ -246,5 +246,13 @@ export default function TemplatesPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function TemplatesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TemplatesContent />
+    </Suspense>
   )
 }

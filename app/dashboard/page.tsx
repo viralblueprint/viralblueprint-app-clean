@@ -64,7 +64,7 @@ export default async function DashboardPage() {
         postTypeCounts[v.post_type] = (postTypeCounts[v.post_type] || 0) + 1
       }
     })
-    const topPostTypes = Object.entries(postTypeCounts)
+    const topPostTypes: { type: string; count: number }[] = Object.entries(postTypeCounts)
       .map(([type, count]: any) => ({ type, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5)
