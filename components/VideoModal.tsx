@@ -170,19 +170,19 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center md:p-4" onClick={onClose}>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="fixed inset-0 bg-black/60" />
       
-      {/* Modal */}
+      {/* Modal Container - allows scrolling on mobile */}
       <div 
-        className="relative bg-white rounded-2xl overflow-hidden md:overflow-visible max-w-5xl w-full max-h-[90vh] flex flex-col md:flex-row"
+        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col-reverse md:flex-row overflow-y-auto md:overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
+          className="fixed md:absolute top-4 right-4 z-30 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
         >
           <X className="w-5 h-5 text-black" />
         </button>
@@ -190,7 +190,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         {/* Save Button - Top Left */}
         <button
           onClick={handleSaveClick}
-          className="absolute top-4 left-4 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
+          className="fixed md:absolute top-4 left-4 z-30 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
           disabled={checkingSaved}
         >
           <Bookmark 
@@ -200,12 +200,12 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           />
         </button>
 
-        {/* Top/Left Side - Clickable Video Preview */}
+        {/* Mobile: Bottom, Desktop: Left Side - Clickable Video Preview */}
         <a 
           href={video.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="w-full md:w-2/5 h-64 md:h-auto bg-gray-900 relative flex flex-col cursor-pointer group"
+          className="w-full md:w-2/5 h-64 md:h-auto bg-gray-900 relative flex flex-col cursor-pointer group flex-shrink-0"
         >
           {/* External Link Icon - shows on hover */}
           <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -243,8 +243,8 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
         </a>
 
-        {/* Bottom/Right Side - Analysis */}
-        <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+        {/* Mobile: Top (appears first), Desktop: Right Side - Analysis */}
+        <div className="flex-1 p-6 md:p-8 md:overflow-y-auto">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Why This Video Went Viral</h2>
 
           {/* Opening Hook Display */}
