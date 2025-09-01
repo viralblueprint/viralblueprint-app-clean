@@ -211,10 +211,9 @@ export default function PatternsPage() {
             <span className="text-sm text-gray-600">
               Showing {videos.length} viral videos
             </span>
-            {(searchQuery || selectedPlatform || selectedNiche || selectedPostType || selectedTimeframe || selectedViews) && (
+            {(selectedPlatform || selectedNiche || selectedPostType || selectedTimeframe || selectedViews) && (
               <button
                 onClick={() => {
-                  setSearchQuery('')
                   setSelectedPlatform('')
                   setSelectedNiche('')
                   setSelectedPostType('')
