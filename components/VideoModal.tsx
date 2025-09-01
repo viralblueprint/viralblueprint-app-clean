@@ -189,21 +189,43 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
       
       {/* Modal Container */}
       <div 
-        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row overflow-hidden z-10"
+        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-hidden z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
+        {/* Fixed Header with Buttons - Mobile */}
+        <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-40 md:hidden bg-gradient-to-b from-white via-white/95 to-transparent">
+          {/* Save Button - Top Left */}
+          <button
+            onClick={handleSaveClick}
+            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
+            disabled={checkingSaved}
+          >
+            <Bookmark 
+              className={`w-5 h-5 transition-colors ${
+                isSaved ? 'fill-purple-600 text-purple-600' : 'text-gray-600'
+              }`} 
+            />
+          </button>
+
+          {/* Close Button - Top Right */}
+          <button
+            onClick={onClose}
+            className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
+          >
+            <X className="w-5 h-5 text-black" />
+          </button>
+        </div>
+
+        {/* Desktop Buttons - positioned absolutely */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-30 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
+          className="hidden md:block absolute top-4 right-4 z-40 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
         >
           <X className="w-5 h-5 text-black" />
         </button>
-
-        {/* Save Button - Top Left */}
         <button
           onClick={handleSaveClick}
-          className="absolute top-4 left-4 z-30 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
+          className="hidden md:block absolute top-4 left-4 z-40 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
           disabled={checkingSaved}
         >
           <Bookmark 
@@ -214,7 +236,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         </button>
 
         {/* Scrollable container for mobile, separate sections for desktop */}
-        <div className="w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
+        <div className="w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden pt-16 md:pt-0">
         
         {/* Mobile: Top, Desktop: Left Side - Clickable Video Preview */}
         <a 
