@@ -64,6 +64,19 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
     }
   }, [video?.id, isOpen])
 
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   if (!isOpen) return null
 
   const handleSaveClick = async () => {
@@ -170,20 +183,19 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
 
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4" onClick={onClose}>
       {/* Backdrop */}
       <div className="fixed inset-0 bg-black/60" />
       
-      {/* Modal Container - prevents background scroll */}
-      <div className="fixed inset-0 flex items-center justify-center p-0 md:p-4">
-        <div 
-          className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row"
-          onClick={(e) => e.stopPropagation()}
-        >
+      {/* Modal Container */}
+      <div 
+        className="relative bg-white md:rounded-2xl max-w-5xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col md:flex-row overflow-hidden z-10"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="fixed md:absolute top-4 right-4 z-30 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
+          className="absolute top-4 right-4 z-30 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-md"
         >
           <X className="w-5 h-5 text-black" />
         </button>
@@ -191,7 +203,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         {/* Save Button - Top Left */}
         <button
           onClick={handleSaveClick}
-          className="fixed md:absolute top-4 left-4 z-30 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
+          className="absolute top-4 left-4 z-30 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-md"
           disabled={checkingSaved}
         >
           <Bookmark 
@@ -201,12 +213,15 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           />
         </button>
 
+        {/* Scrollable container for mobile, separate sections for desktop */}
+        <div className="w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
+        
         {/* Mobile: Top, Desktop: Left Side - Clickable Video Preview */}
         <a 
           href={video.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="w-full md:w-2/5 h-[40vh] md:h-auto bg-gray-900 relative cursor-pointer group flex-shrink-0"
+          className="w-full md:w-2/5 aspect-square md:aspect-auto md:h-full bg-gray-900 relative cursor-pointer group flex-shrink-0"
         >
           {/* External Link Icon - shows on hover */}
           <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -245,7 +260,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
         </a>
 
         {/* Mobile: Bottom, Desktop: Right Side - Analysis */}
-        <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+        <div className="flex-1 p-6 md:p-8 md:overflow-y-auto">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Why This Video Went Viral</h2>
 
           {/* Opening Hook Display */}
@@ -368,7 +383,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
           </div>
 
         </div>
-      </div>
+        </div>
       </div>
 
       {/* Album Save Modal */}
