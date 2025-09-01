@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Navigation from '@/components/Navigation'
 import VideoGrid from '@/components/VideoGrid'
 import { getViralVideos, getIndustries, getPostTypes } from '@/lib/api-scraper'
-import { TrendingUp, Filter, Smartphone, Calendar, Users, Target, Search } from 'lucide-react'
+import { TrendingUp, Smartphone, Calendar, Users, Target } from 'lucide-react'
 import { Video } from '@/types/video'
 
 interface Industry {
@@ -28,7 +28,6 @@ export default function PatternsPage() {
   const videosPerPage = 24
   
   // Filters
-  const [searchQuery, setSearchQuery] = useState<string>('')
   const [selectedNiche, setSelectedNiche] = useState<string>('')
   const [selectedPostType, setSelectedPostType] = useState<string>('')
   const [selectedPlatform, setSelectedPlatform] = useState<string>('')
@@ -47,7 +46,6 @@ export default function PatternsPage() {
     try {
       const [videosData, industriesData, postTypesData] = await Promise.all([
         getViralVideos({
-          searchQuery: searchQuery || undefined,
           industry: selectedNiche || undefined,
           postType: selectedPostType || undefined,
           viewsRange: selectedViews || undefined,
@@ -90,17 +88,13 @@ export default function PatternsPage() {
       setLoading(false)
       setLoadingMore(false)
     }
-  }, [currentPage, searchQuery, selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews, videosPerPage])
+  }, [currentPage, selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews, videosPerPage])
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setCurrentPage(0)
-      setVideos([])
-      loadData(true)
-    }, searchQuery ? 500 : 0)
-
-    return () => clearTimeout(delayDebounceFn)
-  }, [searchQuery, selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews, loadData])
+    setCurrentPage(0)
+    setVideos([])
+    loadData(true)
+  }, [selectedNiche, selectedPostType, selectedPlatform, selectedTimeframe, selectedViews])
   
   const handleLoadMore = () => {
     if (!loadingMore && hasMore) {
@@ -119,27 +113,8 @@ export default function PatternsPage() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Search and Filters */}
+        {/* Filters */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by creator, hook, or keyword..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center mb-4">
-            <Filter className="w-5 h-5 text-gray-600 mr-2" />
-            <h2 className="font-semibold text-gray-900">Filter Videos</h2>
-          </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
