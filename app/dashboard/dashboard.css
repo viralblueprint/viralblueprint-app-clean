@@ -1,0 +1,62 @@
+/* Dashboard Grid Layout Styles */
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+  width: 100% !important;
+}
+
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top, width, height;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: transform, width, height;
+}
+
+.react-grid-item.resizing {
+  transition: none;
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+
+.react-grid-item.dropping {
+  visibility: hidden;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: rgb(147 51 234 / 0.1);
+  opacity: 1;
+  transition-duration: 100ms;
+  z-index: 2;
+  border-radius: 0.5rem;
+  border: 2px dashed rgb(147 51 234 / 0.3);
+}
+
+/* Ensure full width layout */
+.layout {
+  width: 100% !important;
+  min-height: 600px;
+}
+
+/* Custom resize handle styles */
+.react-resizable-handle {
+  background-image: none !important;
+}
+
+.react-resizable-handle::after {
+  content: '';
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}

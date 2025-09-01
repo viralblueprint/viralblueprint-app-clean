@@ -1,0 +1,74 @@
+{
+  "name": "Viralizes - TikTok/Instagram Data Collector",
+  "nodes": [
+    {
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [250, 300],
+      "webhookId": "viral-content-webhook",
+      "parameters": {
+        "path": "viral-content",
+        "responseMode": "onReceived",
+        "responseData": "allEntries"
+      }
+    },
+    {
+      "name": "Process Video Data",
+      "type": "n8n-nodes-base.function",
+      "position": [450, 300],
+      "parameters": {
+        "functionCode": "// Process incoming video data\nconst items = [];\n\nfor (const item of $input.all()) {\n  const videoData = item.json;\n  \n  // Calculate viral ratio\n  const viralRatio = videoData.views / videoData.followers;\n  \n  // Determine niche based on keywords or manual input\n  const niche = videoData.niche || 'Lifestyle';\n  \n  // Format for Supabase\n  items.push({\n    json: {\n      platform: videoData.platform || 'tiktok',\n      url: videoData.url,\n      views: parseInt(videoData.views),\n      followers_at_time: parseInt(videoData.followers),\n      date_posted: videoData.date || new Date().toISOString().split('T')[0],\n      niche: niche,\n      format_type: 'video',\n      hook_text: videoData.hook_text,\n      visual_hook_desc: videoData.visual_desc || '',\n      verbal_hook_text: videoData.verbal_text || '',\n      written_hook_text: videoData.written_text || '',\n      // Viral ratio is auto-calculated by Supabase\n    }\n  });\n}\n\nreturn items;"
+      }
+    },
+    {
+      "name": "Insert to Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "position": [650, 300],
+      "parameters": {
+        "operation": "create",
+        "table": "viral_content",
+        "options": {}
+      },
+      "credentials": {
+        "supabaseApi": {
+          "id": "1",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "name": "Update Pattern Stats",
+      "type": "n8n-nodes-base.supabase",
+      "position": [850, 300],
+      "parameters": {
+        "operation": "update",
+        "table": "hook_patterns",
+        "filters": {
+          "conditions": [
+            {
+              "field": "template",
+              "type": "string",
+              "operation": "contains",
+              "value": "={{$node['Process Video Data'].json['hook_pattern']}}"
+            }
+          ]
+        },
+        "updateFields": {
+          "sample_size": "={{$node['Get Pattern'].json['sample_size'] + 1}}",
+          "occurrence_frequency": "={{$node['Get Pattern'].json['occurrence_frequency'] + 1}}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{"node": "Process Video Data", "type": "main", "index": 0}]]
+    },
+    "Process Video Data": {
+      "main": [[{"node": "Insert to Supabase", "type": "main", "index": 0}]]
+    },
+    "Insert to Supabase": {
+      "main": [[{"node": "Update Pattern Stats", "type": "main", "index": 0}]]
+    }
+  }
+}
