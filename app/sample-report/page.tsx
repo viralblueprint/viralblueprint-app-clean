@@ -141,7 +141,7 @@ export default function SampleReportPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/#pricing" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold hover:shadow-lg transition-all text-lg">
+              <Link href="/" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold hover:shadow-lg transition-all text-lg">
                 Get Full Report Access
               </Link>
               <button className="px-8 py-4 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-300 hover:border-purple-600 transition-all text-lg flex items-center justify-center">
@@ -367,8 +367,8 @@ export default function SampleReportPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Link href="/#pricing" className="px-8 py-4 bg-white text-purple-700 rounded-full font-semibold hover:bg-gray-100 transition-all text-lg">
-              View Pricing Plans
+            <Link href="/" className="px-8 py-4 bg-white text-purple-700 rounded-full font-semibold hover:bg-gray-100 transition-all text-lg">
+              Get Started Now
             </Link>
             <button className="px-8 py-4 bg-white/20 text-white rounded-full font-semibold border-2 border-white/50 hover:bg-white/30 transition-all text-lg">
               Download Sample PDF

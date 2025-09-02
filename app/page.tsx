@@ -1,6 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Navigation from '@/components/Navigation'
+import CheckoutPopup from '@/components/CheckoutPopup'
+import { PLANS } from '@/lib/stripe'
 import { 
   CheckCircle, TrendingUp, Users, 
   ArrowRight, Target, Video
@@ -8,6 +11,7 @@ import {
 import Link from 'next/link'
 
 export default function Home() {
+  const [showCheckout, setShowCheckout] = useState(false)
 
   const pricingPlans = [
     {
@@ -86,9 +90,11 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="#pricing" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold hover:shadow-lg transition-all text-lg">
+              <button 
+                onClick={() => setShowCheckout(true)}
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold hover:shadow-lg transition-all text-lg">
                 Start 7-Day Free Trial
-              </Link>
+              </button>
               <Link href="/patterns" className="px-8 py-4 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-300 hover:border-purple-600 transition-all text-lg">
                 Browse Viral Database
               </Link>
@@ -218,6 +224,7 @@ export default function Home() {
                 </ul>
 
                 <button
+                  onClick={() => setShowCheckout(true)}
                   className={`w-full py-3 rounded-full font-semibold transition-all ${
                     plan.popular
                       ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg'
@@ -297,9 +304,11 @@ export default function Home() {
           <p className="text-xl text-white/90 mb-8">
             Join 500+ creators using data to craft viral content
           </p>
-          <Link href="#pricing" className="inline-block px-8 py-4 bg-white text-purple-700 rounded-full font-semibold hover:bg-gray-100 transition-all text-lg">
+          <button 
+            onClick={() => setShowCheckout(true)}
+            className="inline-block px-8 py-4 bg-white text-purple-700 rounded-full font-semibold hover:bg-gray-100 transition-all text-lg">
             Get Instant Access Now
-          </Link>
+          </button>
           <p className="text-sm text-white/70 mt-4">
             30-day money-back guarantee • Cancel anytime
           </p>
@@ -348,6 +357,13 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      
+      {/* Checkout Popup */}
+      <CheckoutPopup 
+        isOpen={showCheckout}
+        onClose={() => setShowCheckout(false)}
+        plan={PLANS.pro}
+      />
     </div>
   )
 }

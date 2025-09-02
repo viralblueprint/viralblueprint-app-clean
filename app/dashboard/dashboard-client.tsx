@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Navigation from '@/components/Navigation'
 import AlbumModal from '@/components/AlbumModal'
 import AuthModal from '@/components/AuthModal'
+import LockedContent from '@/components/LockedContent'
+import { useSubscription } from '@/contexts/SubscriptionContext'
 import { getViralVideos } from '@/lib/api-scraper'
 import { getAlbumsWithCounts, createAlbum } from '@/lib/api-albums'
 import { useAuth } from '@/components/AuthProvider'
@@ -83,6 +85,7 @@ const platforms = [
 ]
 
 export default function DashboardClient({ industries, defaultIndustry, defaultPlatform, initialData }: DashboardClientProps) {
+  const { hasActiveSubscription, isLoading: subscriptionLoading } = useSubscription()
   const [selectedIndustry, setSelectedIndustry] = useState<string>(defaultIndustry)
   const [selectedPlatform, setSelectedPlatform] = useState<string>(defaultPlatform)
   const [data, setData] = useState<any>(initialData)
@@ -282,11 +285,16 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  if (subscriptionLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
+      </div>
+    )
+  }
+
+  const dashboardContent = (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Industry Selector */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -529,20 +537,25 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
                     ))
                   )}
                 </div>
-
               </div>
             )}
           </div>
         </div>
       </div>
-      
+  )
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <LockedContent isLocked={!hasActiveSubscription} requiredPlan="pro">
+        {dashboardContent}
+      </LockedContent>
       <AlbumModal
         isOpen={showAlbumModal}
         onClose={() => setShowAlbumModal(false)}
         onCreateAlbum={handleCreateAlbum}
         mode="create"
       />
-      
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
