@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { CheckCircle, Rocket, Calendar, CreditCard, ArrowRight } from 'lucide-react';
+import { CheckCircle, Rocket, Calendar, CreditCard, ArrowRight, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase-browser';
 import { PLANS } from '@/lib/stripe';
 
-export default function WelcomePage() {
+function WelcomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [user, setUser] = useState<any>(null);
@@ -137,5 +137,17 @@ export default function WelcomePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WelcomePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-pink-50">
+        <Loader2 className="w-12 h-12 text-purple-600 animate-spin" />
+      </div>
+    }>
+      <WelcomeContent />
+    </Suspense>
   );
 }
