@@ -90,27 +90,62 @@ export default async function DashboardPage() {
       .sort((a, b) => b.avgViews - a.avgViews)
       .slice(0, 5)
 
-    // Get recent viral hooks
-    const recentHooks = videos
-      .filter((v: Video) => v.hook || v.written_hook || v.verbal_hook)
-      .slice(0, 5)
-      .map((v: Video) => ({
-        hook: v.hook || v.written_hook || v.verbal_hook,
-        views: v.views,
-        platform: v.platform
-      }))
-
-    // Get trending topics (based on visual/audio/written hook types)
-    const topicCounts: Record<string, number> = {}
+    // Aggregate hook types with analytics
+    const hookTypeStats: Record<string, { count: number; totalViews: number; videos: Video[] }> = {}
     videos.forEach((v: Video) => {
-      if (v.visual_hook_type) topicCounts[v.visual_hook_type] = (topicCounts[v.visual_hook_type] || 0) + 1
-      if (v.audio_hook_type) topicCounts[v.audio_hook_type] = (topicCounts[v.audio_hook_type] || 0) + 1
-      if (v.written_hook_type) topicCounts[v.written_hook_type] = (topicCounts[v.written_hook_type] || 0) + 1
+      const hookType = v.hook || v.written_hook || v.verbal_hook || v.visual_hook_type || v.audio_hook_type || v.written_hook_type
+      if (hookType) {
+        if (!hookTypeStats[hookType]) {
+          hookTypeStats[hookType] = { count: 0, totalViews: 0, videos: [] }
+        }
+        hookTypeStats[hookType].count++
+        hookTypeStats[hookType].totalViews += v.views || 0
+        hookTypeStats[hookType].videos.push(v)
+      }
     })
-    const trendingTopics = Object.entries(topicCounts)
-      .map(([topic, count]) => ({ topic, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 8)
+    
+    // Calculate average performance for each hook type
+    const hookAnalytics = Object.entries(hookTypeStats)
+      .map(([hookType, stats]) => ({
+        hookType,
+        count: stats.count,
+        avgViews: Math.round(stats.totalViews / stats.count),
+        totalViews: stats.totalViews,
+        avgEngagement: stats.videos.reduce((sum, v) => {
+          const engagement = ((v.likes || 0) + (v.comments || 0)) / (v.views || 1) * 100
+          return sum + engagement
+        }, 0) / stats.count
+      }))
+      .sort((a, b) => b.avgViews - a.avgViews)
+      .slice(0, 5)
+
+    // Aggregate format/post types with analytics
+    const formatStats: Record<string, { count: number; totalViews: number; videos: Video[] }> = {}
+    videos.forEach((v: Video) => {
+      if (v.post_type) {
+        if (!formatStats[v.post_type]) {
+          formatStats[v.post_type] = { count: 0, totalViews: 0, videos: [] }
+        }
+        formatStats[v.post_type].count++
+        formatStats[v.post_type].totalViews += v.views || 0
+        formatStats[v.post_type].videos.push(v)
+      }
+    })
+    
+    // Calculate average performance for each format
+    const formatAnalytics = Object.entries(formatStats)
+      .map(([format, stats]) => ({
+        format,
+        count: stats.count,
+        avgViews: Math.round(stats.totalViews / stats.count),
+        totalViews: stats.totalViews,
+        avgEngagement: stats.videos.reduce((sum, v) => {
+          const engagement = ((v.likes || 0) + (v.comments || 0)) / (v.views || 1) * 100
+          return sum + engagement
+        }, 0) / stats.count
+      }))
+      .sort((a, b) => b.avgViews - a.avgViews)
+      .slice(0, 5)
 
     initialData = {
       totalVideos: videos.length,
@@ -120,9 +155,9 @@ export default async function DashboardPage() {
       topPlatform: Object.entries(platformCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A',
       topPostTypes,
       evergreenTopics,
-      recentHooks,
+      hookAnalytics,
       performanceByPlatform,
-      trendingTopics
+      formatAnalytics
     }
   }
 

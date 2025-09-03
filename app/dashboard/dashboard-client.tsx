@@ -64,9 +64,9 @@ interface InitialData {
   topPlatform: string;
   topPostTypes: { type: string; count: number }[];
   evergreenTopics: { type: string; avgViews: number; count: number }[];
-  recentHooks: { hook: string; views: number; platform: string }[];
+  hookAnalytics: { hookType: string; count: number; avgViews: number; totalViews: number; avgEngagement: number }[];
   performanceByPlatform: { platform: string; videos: number; totalViews: number; avgViews: number }[];
-  trendingTopics: { topic: string; count: number }[];
+  formatAnalytics: { format: string; count: number; avgViews: number; totalViews: number; avgEngagement: number }[];
 }
 
 interface DashboardClientProps {
@@ -193,27 +193,62 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
         .sort((a, b) => b.avgViews - a.avgViews)
         .slice(0, 5)
 
-      // Get recent viral hooks
-      const recentHooks = videos
-        .filter((v: Video) => v.hook || v.written_hook || v.verbal_hook)
-        .slice(0, 5)
-        .map((v: Video) => ({
-          hook: v.hook || v.written_hook || v.verbal_hook,
-          views: v.views,
-          platform: v.platform
-        }))
-
-      // Get trending topics
-      const topicCounts: Record<string, number> = {}
+      // Aggregate hook types with analytics
+      const hookTypeStats: Record<string, { count: number; totalViews: number; videos: Video[] }> = {}
       videos.forEach((v: Video) => {
-        if (v.visual_hook_type) topicCounts[v.visual_hook_type] = (topicCounts[v.visual_hook_type] || 0) + 1
-        if (v.audio_hook_type) topicCounts[v.audio_hook_type] = (topicCounts[v.audio_hook_type] || 0) + 1
-        if (v.written_hook_type) topicCounts[v.written_hook_type] = (topicCounts[v.written_hook_type] || 0) + 1
+        const hookType = v.hook || v.written_hook || v.verbal_hook || v.visual_hook_type || v.audio_hook_type || v.written_hook_type
+        if (hookType) {
+          if (!hookTypeStats[hookType]) {
+            hookTypeStats[hookType] = { count: 0, totalViews: 0, videos: [] }
+          }
+          hookTypeStats[hookType].count++
+          hookTypeStats[hookType].totalViews += v.views || 0
+          hookTypeStats[hookType].videos.push(v)
+        }
       })
-      const trendingTopics = Object.entries(topicCounts)
-        .map(([topic, count]) => ({ topic, count: count as number }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 8)
+      
+      // Calculate average performance for each hook type
+      const hookAnalytics = Object.entries(hookTypeStats)
+        .map(([hookType, stats]) => ({
+          hookType,
+          count: stats.count,
+          avgViews: Math.round(stats.totalViews / stats.count),
+          totalViews: stats.totalViews,
+          avgEngagement: stats.videos.reduce((sum, v) => {
+            const engagement = ((v.likes || 0) + (v.comments || 0)) / (v.views || 1) * 100
+            return sum + engagement
+          }, 0) / stats.count
+        }))
+        .sort((a, b) => b.avgViews - a.avgViews)
+        .slice(0, 5)
+
+      // Aggregate format/post types with analytics
+      const formatStats: Record<string, { count: number; totalViews: number; videos: Video[] }> = {}
+      videos.forEach((v: Video) => {
+        if (v.post_type) {
+          if (!formatStats[v.post_type]) {
+            formatStats[v.post_type] = { count: 0, totalViews: 0, videos: [] }
+          }
+          formatStats[v.post_type].count++
+          formatStats[v.post_type].totalViews += v.views || 0
+          formatStats[v.post_type].videos.push(v)
+        }
+      })
+      
+      // Calculate average performance for each format
+      const formatAnalytics = Object.entries(formatStats)
+        .map(([format, stats]) => ({
+          format,
+          count: stats.count,
+          avgViews: Math.round(stats.totalViews / stats.count),
+          totalViews: stats.totalViews,
+          avgEngagement: stats.videos.reduce((sum, v) => {
+            const engagement = ((v.likes || 0) + (v.comments || 0)) / (v.views || 1) * 100
+            return sum + engagement
+          }, 0) / stats.count
+        }))
+        .sort((a, b) => b.avgViews - a.avgViews)
+        .slice(0, 5)
 
       setData({
         totalVideos: videos.length,
@@ -223,11 +258,11 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
         topPlatform: Object.entries(platformCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A',
         topPostTypes,
         evergreenTopics,
-        recentHooks,
+        hookAnalytics,
         performanceByPlatform,
-        trendingTopics
+        formatAnalytics
       })
-    } catch (_error) {
+    } catch (error) {
       console.error('Error loading dashboard data:', error)
     } finally {
       setLoading(false)
@@ -416,20 +451,26 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
                 Best Hook Types
               </h3>
               <div className="space-y-3">
-                {data.recentHooks.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">No hooks available</p>
+                {(!data.hookAnalytics || data.hookAnalytics.length === 0) ? (
+                  <p className="text-gray-500 text-center py-4">No hook data available</p>
                 ) : (
-                  data.recentHooks.map((hook, index) => (
-                    <div key={index} className="border-l-4 border-purple-300 pl-4 py-2">
-                      <p className="text-sm text-gray-900 font-medium mb-1 line-clamp-2">
-                        &quot;{hook.hook}&quot;
-                      </p>
-                      <div className="flex items-center gap-3 text-xs text-gray-600">
-                        <span className="flex items-center gap-1">
-                          <Eye className="w-3 h-3" />
-                          {formatNumber(hook.views)}
+                  data.hookAnalytics.map((hook, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold text-gray-900">{hook.hookType}</p>
+                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                          {hook.count} videos
                         </span>
-                        <span className="capitalize">{hook.platform}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <p className="text-gray-500">Avg Views</p>
+                          <p className="font-medium text-gray-900">{formatNumber(hook.avgViews)}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Engagement</p>
+                          <p className="font-medium text-gray-900">{hook.avgEngagement.toFixed(1)}%</p>
+                        </div>
                       </div>
                     </div>
                   ))
@@ -443,17 +484,29 @@ export default function DashboardClient({ industries, defaultIndustry, defaultPl
                 <Hash className="w-5 h-5 text-purple-600" />
                 Best Performing Formats
               </h3>
-              <div className="flex flex-wrap gap-2">
-                {data.trendingTopics.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4 w-full">No trending topics available</p>
+              <div className="space-y-3">
+                {(!data.formatAnalytics || data.formatAnalytics.length === 0) ? (
+                  <p className="text-gray-500 text-center py-4">No format data available</p>
                 ) : (
-                  data.trendingTopics.map((topic, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium"
-                    >
-                      {topic.topic} ({topic.count})
-                    </span>
+                  data.formatAnalytics.map((format, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold text-gray-900">{format.format}</p>
+                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                          {format.count} videos
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <p className="text-gray-500">Avg Views</p>
+                          <p className="font-medium text-gray-900">{formatNumber(format.avgViews)}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Engagement</p>
+                          <p className="font-medium text-gray-900">{format.avgEngagement.toFixed(1)}%</p>
+                        </div>
+                      </div>
+                    </div>
                   ))
                 )}
               </div>
