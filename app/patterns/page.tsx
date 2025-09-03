@@ -3,8 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Navigation from '@/components/Navigation'
 import VideoGrid from '@/components/VideoGrid'
-import LockedContent from '@/components/LockedContent'
-import { useSubscription } from '@/contexts/SubscriptionContext'
 import { getViralVideos, getIndustries, getPostTypes } from '@/lib/api-scraper'
 import { TrendingUp, Smartphone, Calendar, Users, Target } from 'lucide-react'
 import { Video } from '@/types/video'
@@ -20,7 +18,6 @@ interface PostType {
 }
 
 export default function PatternsPage() {
-  const { hasActiveSubscription, isLoading: subscriptionLoading } = useSubscription()
   const [videos, setVideos] = useState<Video[]>([])
   const [creatorNiches, setCreatorNiches] = useState<Industry[]>([])
   const [postTypes, setPostTypes] = useState<PostType[]>([])
@@ -110,13 +107,6 @@ export default function PatternsPage() {
     { value: 'instagram', label: 'Instagram Reels' }
   ]
 
-  if (subscriptionLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
-      </div>
-    )
-  }
 
   const content = (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -285,9 +275,7 @@ export default function PatternsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <LockedContent isLocked={!hasActiveSubscription} requiredPlan="pro">
-        {content}
-      </LockedContent>
+      {content}
     </div>
   )
 }
